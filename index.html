@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<head>
+	<title>Tejas Rathod</title>
+	<link rel="icon" type="image/jpg" href="eagle.jpg">
+	<link rel="stylesheet" href="main.css">
+</head>
+<body>
+
+<div class="well" id="well">
+
+<div id="intro" class="panel">
+
+   	<div class="intro-content">
+   		<div class="row">
+
+	   			<h5>Hello, World.</h5>
+	   			<h1>I'm Tejas Rathod</h1>
+
+	   			<p class="intro-position">
+	   				<span>Cricketer</span>
+	   				<span>Developer</span>
+	   				<span>Wanderer</span>  
+	   			</p>
+   			
+   		</div>
+
+   	</div> <!-- /intro-content -->
+	<div class="stars"></div>
+	<div class="twinkling"></div>
+   	<ul class="intro-social">        
+         <!-- <li><a target="_blank" href="https://github.com/myself-i-me" ><img src="git.png" height="50px"></a></li> -->
+         <li id="in"><a target="_blank" href="https://www.linkedin.com/in/tejaskumar-rathod-0269b825a"><img src="in.png" height="50px"></a></li>
+         
+      </ul> <!-- /intro-social -->      	
+
+   </div> <!-- /intro -->
+
+<div class="panel" id="about">
+	<div class="about">
+		<div class="about-overlay"></div>
+		<div class="pic-container">
+			<img src="https://img.freepik.com/free-vector/man-face-close-up_98292-4059.jpg?w=740&t=st=1671293606~exp=1671294206~hmac=e13fd43d461cb0e4f76ab105e7fce4d29c18130ae3bc16a1f4973f86cf5db6df" alt="my picture" id="dp">
+			<div class="description">
+				<h2 style="margin: 0;">About Me</h2>
+				<p>
+					I am Tejas Rathod, a 21 old software engineer based out of Pune, India.
+					I am pursuing my Bachelor's of engineering in Computer Science and Engineering from GH Raisoni College of engineering and management, Pune.
+					I have a predilection for design and enjoy working on projects where approaching design and development
+					as co-dependent processes can lead to smarter solutions and a better overall product experience for fellow humans.
+					If you have an exciting project in mind, or just wanna chat, <a id="mail" href="mailto:official.tejasrathod@gmail.com">get in touch with me here</a> :)</p>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+</div>
+
+<script>
+	(function() {
+		"use strict";
+		/*[pan and well CSS scrolls]*/
+		var pnls = document.querySelectorAll('.panel').length,
+				scdir, hold = false;
+
+		function _scrollY(obj) {
+			var slength, plength, pan, step = 100,
+					vh = window.innerHeight / 100,
+					vmin = Math.min(window.innerHeight, window.innerWidth) / 100;
+			if ((this !== undefined && this.id === 'well') || (obj !== undefined && obj.id === 'well')) {
+				pan = this || obj;
+				plength = parseInt(pan.offsetHeight / vh);
+			}
+			if (pan === undefined) {
+				return;
+			}
+			plength = plength || parseInt(pan.offsetHeight / vmin);
+			slength = parseInt(pan.style.transform.replace('translateY(', ''));
+			if (scdir === 'up' && Math.abs(slength) < (plength - plength / pnls)) {
+				slength = slength - step;
+			} else if (scdir === 'down' && slength < 0) {
+				slength = slength + step;
+			} else if (scdir === 'top') {
+				slength = 0;
+			}
+			if (hold === false) {
+				hold = true;
+				pan.style.transform = 'translateY(' + slength + 'vh)';
+				setTimeout(function() {
+					hold = false;
+				}, 1000);
+			}
+			console.log(scdir + ':' + slength + ':' + plength + ':' + (plength - plength / pnls));
+		}
+		/*[swipe detection on touchscreen devices]*/
+		function _swipe(obj) {
+			var swdir,
+					sX,
+					sY,
+					dX,
+					dY,
+					threshold = 100,
+					/*[min distance traveled to be considered swipe]*/
+					slack = 50,
+					/*[max distance allowed at the same time in perpendicular direction]*/
+					alT = 500,
+					/*[max time allowed to travel that distance]*/
+					elT, /*[elapsed time]*/
+					stT; /*[start time]*/
+			obj.addEventListener('touchstart', function(e) {
+				var tchs = e.changedTouches[0];
+				swdir = 'none';
+				sX = tchs.pageX;
+				sY = tchs.pageY;
+				stT = new Date().getTime();
+				//e.preventDefault();
+			}, false);
+
+			obj.addEventListener('touchmove', function(e) {
+				e.preventDefault(); /*[prevent scrolling when inside DIV]*/
+			}, false);
+
+			obj.addEventListener('touchend', function(e) {
+				var tchs = e.changedTouches[0];
+				dX = tchs.pageX - sX;
+				dY = tchs.pageY - sY;
+				elT = new Date().getTime() - stT;
+				if (elT <= alT) {
+					if (Math.abs(dX) >= threshold && Math.abs(dY) <= slack) {
+						swdir = (dX < 0) ? 'left' : 'right';
+					} else if (Math.abs(dY) >= threshold && Math.abs(dX) <= slack) {
+						swdir = (dY < 0) ? 'up' : 'down';
+					}
+					if (obj.id === 'well') {
+						if (swdir === 'up') {
+							scdir = swdir;
+							_scrollY(obj);
+						} else if (swdir === 'down' && obj.style.transform !== 'translateY(0)') {
+							scdir = swdir;
+							_scrollY(obj);
+
+						}
+						e.stopPropagation();
+					}
+				}
+			}, false);
+		}
+		/*[assignments]*/
+		var well = document.getElementById('well');
+		well.style.transform = 'translateY(0)';
+		well.addEventListener('wheel', function(e) {
+			if (e.deltaY < 0) {
+				scdir = 'down';
+			}
+			if (e.deltaY > 0) {
+				scdir = 'up';
+			}
+			e.stopPropagation();
+		});
+		well.addEventListener('wheel', _scrollY);
+		_swipe(well);
+		var tops = document.querySelectorAll('.top');
+		for (var i = 0; i < tops.length; i++) {
+			tops[i].addEventListener('click', function() {
+				scdir = 'top';
+				_scrollY(well);
+			});
+		}
+	})();
+</script>
+
+</body>
